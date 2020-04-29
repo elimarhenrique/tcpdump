@@ -1,0 +1,109 @@
+RFCs importantes:
+786, 791, 792, 793, 1122, 6890, 8200 e todas respectivas atualizações.
+
+www.sans.org/security-resources/tcpip.pdf
+www.sans.org/security-resources/ipv6_tcpip_pocketguide.pdf
+http://eriberto.pro.br/files/guia_tcpdump.pdf
+https://github.com/coreemu/core
+
+Protocolos de rede são um conjunto de regras literais que estabelecem
+um padrão de comunicação e comportamento.
+Protocolos de rede, quando implementados possuem uma estrutura básica, formada
+por um header(cabeçalho) e um payload(áreea de dados)
+
++--------+
+| header |
++--------+
+|        | 
+| payload|
+|        |
++--------+
+
+
+>>> O protocolo IP
+IP,RFC 791. O Protocolo mais importante da famila TCP/IP
+
+
+> Abaixo o header(cabeçalho) do protocolo IP.
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|Version|  IHL  |Type of Service|          Total Length         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+          Identification        |Flags|      Fragment Offset    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  Time to Live |    Protocol   |         Header Checksum       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                       Source Adress                           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                    Destination Address                        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                    Options                    |    Padding    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+São 32bits de largura ou 4 bytes de largura.
+
+1. Version
+Os 4 primeiros bits se refere a versão no caso do IPV4 0100 = 4
+
+2. IHL - Internet Header length
+- Quantidade de linhas do cabeçalho de 0 a 15, as cinco primeiras linhas são 
+obrigatórias então o minimo de linhas do cabeçalho sera 5 e o maximo 15 linhas.
+
+3. Type of Service
+- Utilizado para QoS, qualidade de serviço
+- pode ser utilizado como finger print, o SIN enviado pelos SO(Sistemas Operacionais) variam.
+- No geral esse campo vem zerado
+
+4. Total Length (em bytes)
+- 2 bytes, tamanho em bytes de todo o IP incluindo o payload
+- 16 bits 1 - tamanho máximo de 65535 bytes.
+
+5- Time to Live (TTL)
+- Temo de vida do pacote, antes era medido em segundos agora em hop (saltos)
+- 8 bits, maior valor em decimal 255
+- O valor do TTL é definido no sistema operacional nos sistemas linux o valor é 64
+- No Debian o valor fica definido em: /proc/sys/net/ipv4/ip_default_ttl
+- O diretório /proc controla propriedades do kernel
+
+6- Protocol
+- O IP carrega dentro de si um tipo de dado, um outro protocolo de rede, que são chamado de protocolos IP, são ditados pela IANA. No linux você pode consultalos em /etc/protocols
+
+- capturar um IP circulando:
+tcpdump -n ip -c1 -x
+
+
+
+7- Header Checksum
+- O checksum é calculado de 2 em 2 bytes
+
+8- Source Address
+- Endereço IP de origem
+
+9- Destination Address
+- Endereço IP de destino
+
+10- Options (geralmente não tem options no IP)
+- 4 options classicos no IP, timestamp, record route, loose route e strict route
+
+11- Padding
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

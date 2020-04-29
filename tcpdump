@@ -1,0 +1,4 @@
+-- TTL => Time To Live
+
+Nos sistemas linux a configuração do TTL fica no arquio:
+/proc/sys/net/ipv4/ip_default_ttl
