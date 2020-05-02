@@ -67,7 +67,8 @@ obrigatórias então o minimo de linhas do cabeçalho sera 5 e o maximo 15 linha
 - O diretório /proc controla propriedades do kernel
 
 6- Protocol
-- O IP carrega dentro de si um tipo de dado, um outro protocolo de rede, que são chamado de protocolos IP, são ditados pela IANA. No linux você pode consultalos em /etc/protocols
+- O IP carrega dentro de si um tipo de dado, um outro protocolo de rede, que são chamado de protocolos IP, são ditados 
+pela IANA. No linux você pode consultalos em /etc/protocols
 
 - capturar um IP circulando:
 tcpdump -n ip -c1 -x
@@ -88,21 +89,91 @@ tcpdump -n ip -c1 -x
 
 11- Padding
 
+>>>>
+Os protocolos IP mais importantes para análise de tráfego são o TCP, UDP, ICMP.
+Entre todos os protocolos IP sómente o TCP e o UDP utilizam portas.
 
+A rede 127.0.0.1/8 inteira é loopback
+exemplos: ping 127.0.0.1
+          ping 127.20.30.40
+quem responde a esse ping é o kernel do sistema operacional, essa rede é definida no kernel.
 
+0.0.0.0 - esta maquina
+0.0.0.0/8 - esta rede
 
+exemplos: ping 0.0.0.0
 
+quando é enviado um pacote ao DHCP, o source address do cabeçalho IP sai como 0.0.0.0
 
+----------------------------------------------------------------------------------------
+>>> O protocolo TCP
+TCP,RFC 793. O Protocolo de transporte mais controlado, confiável e complexo da família TCP/IP.
 
+> Abaixo o header(cabeçalho) do protocolo TCP.
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          Source Port          |        Destination Port       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                        Sequence Number                        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                    Acknowledgment Number                      |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  Data |           |U|A|P|R|S|F|                               |
+| Offset| Reserved  |R|C|S|S|Y|I|            Window             |
+|       |           |G|K|H|T|N|N|                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|           Checksum            |         Urgent Pointer        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                    Options                    |    Padding    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
+1. Source Port
+- Porta de orintem, possui tamanho de 16bits/2bytes, e vai de 0 a 65.535
 
+2. Destination Port
+- Porta de destino, possui tamanho de 16bits/2bytes, e vai de 0 a 65.535
 
+3. Sequence Number
+- Numero de sequencia
 
+4. Acknowledgment Number
+-
 
+5. Data Offset
+- Quantidade de linhas que tem o cabeçalho TCP, 4bits.
+- No TCP podendo ter de 5 a 15 linhas de 20 a 60 bytes de tamanho
 
+6. Flags TCP
+- Syn (sinchronize): inicia conexões.
+- Fin (finish): finaliza conexões
+- Psh (push): envia dados.
+- Ack (acknowledgment): confirmação de que é conhecido o número de sequência do próximo 
+                        segmento a ser enviado pelo lado oposto.
+- Rst (reset): "Não entendi".                        
 
+Obs. As flags TCP são disparadas contra portas e somente a flag push possui payload.
 
+- three way handshake (estabelecimento da conexão)
+CLI  -> SERV Syn
+SERV -> CLI  Ack  SERV -> CLI Syn
+CLI  -> SERV Ack
 
+1. 1/2 Fechamento
+Fin
+Ack
+Fin
+Ack
+
+2. FC
+Fin
+Ack/Fin
+Ack
+
+exemplo tcpdump
+tcpdump -n -i lo port 80 -w /tmp/t1.pcap -v
+
+tcpdump -n -r /tmp/t1.pcap | cat -n | sed 's/^/\n/'
 
 
 
