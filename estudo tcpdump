@@ -30,7 +30,7 @@ IP,RFC 791. O Protocolo mais importante da famila TCP/IP
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |Version|  IHL  |Type of Service|          Total Length         |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-          Identification        |Flags|      Fragment Offset    |
+|         Identification        |Flags|      Fragment Offset    |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |  Time to Live |    Protocol   |         Header Checksum       |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -176,5 +176,148 @@ tcpdump -n -i lo port 80 -w /tmp/t1.pcap -v
 tcpdump -n -r /tmp/t1.pcap | cat -n | sed 's/^/\n/'
 
 
+7. Window
+- Window size: tamanho da janela de 16bits
+- o windowscale (wsacle) foi colocado na option para 
+  potencializar esse campo.
 
+8. Checksum
+- Soma de 2 em 2 bytes incluindo o payload mais o pseodo 
+  cabeçalho IP.
 
+  +--------------------------------+
+  |   Cabeçalho IP                 |  
+  +--------------------------------+
+  |   +------------------------+   |
+  |   | Cabeçalho TCP          |   |
+  |   +------------------------+   |
+  |   | Payload TCP            |   |
+  |   | +--------------------+ |   |
+  |   | |        HTTP        | |   |
+  |   | |                    | |   |
+  |   | +--------------------+ |   |
+  |   |                        |   |
+  |   +------------------------+   |
+  |   Payload IP                   |
+  +--------------------------------+
+
+. O protocolo TCP é orientado a conexão e a garante por meio 
+  do three-way handshake.
+. É um protocolo full duplex
+. Em uma rede, independente do protocolo, é sempre o cliente
+  quem inicia a conexão.
+. Não há rede sem servidor ou serviço.
+. A RFC 6890 indica os IPs para serem utilizados em documentação.
+
+----------------------------------------------------------------------------------------
+
+O protocolo UDP
+
+UDP, RFC 768. O protocolo de transporte mais rápido da família TCP/IP.
+
+ 0      7 8     15 16    23 24    31
++--------+--------+--------+--------+
+|     Source      |   Destination   |
+|      Port       |      Port       |
++--------+--------+--------+--------+
+|                 |                 |
+|     Length      |    Checksum     |
++--------+--------+--------+--------+
+
+32 bit de largura
+1. Source Port
+- Porta de origem, possui 16 bit
+
+2. Destination Port
+- Porta de destino, possui 16 bits
+
+3. Length
+- Tamanho do UDP inteiro
+
+4. Checksum
+- Opcional, feito da mesma forma que o TCP, incluindo o pseodo cabeçalho
+  e o payload.
+
+exemplo de coneção UDP
+
+nc -u 127.0.0.1 631
+
+----------------------------------------------------------------------------------------
+
+ICMP, RFC 792. O protocolo de controle do IP
+
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|     Type      |     Code      |         Checksum              |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                             ICMP...                           |
+
+1. Type
+- Possui varios tipos, exemplos:
+ a. Tipo 8: echo request
+ b. Tipo 0: echo reply
+ c. Tipo 3, cóidigo 3: porta de destino inacessível
+ d. Tipo 11, código 0: TTL expirado em trânsito
+
+- O ICMP é utilizado para contraolar as atividades de rede
+- De um modo geral, entre os protocolos IP, somente TCP não é 
+  assessorado pelo ICMP.
+- Há vários tipos e códigos ICMP.
+- Não se bloqueia ICMP em redes!!! Isso não cria segurança e sim 
+  descontrole. O correto é controlar o ICMP pelo sistema de firewall
+- Sistemas de firewall são compostos por diversos elementos como
+  filtros de pacotes, proxies, IDS, IPS, verificadores de integridade etc.
+  Firewalls não controlam somente TCP e UDP!
+
+----------------------------------------------------------------------------------------
+
+- O modelo Osi
+
+Modelo criado pela ISO para que fabricantes de hardware de rede
+possam desenvolver equipamentos compatíveis entre si.
+
+           +-----------------+
+   Dados   |    Aplicação    | Usuário, http, ftp, smtp, pop3, chat etc.
+           +-----------------+
+   Dados   |   Apresentação  | SSL, conversão de padrões, (des)compressão.
+           +-----------------+
+   Dados   |      Sessão     | Sessão de aplicações.
+           +-----------------+-------------
+Segmentos  |    Transporte   | TCP, UDP
+           +-----------------+-------------
+Pacotes[1] |      Rede       | IP e protocolos IP (exceto TCP e UDP) / roteador
+           +-----------------+
+Quadros[2] |     Enlace      | Ethernet, ATM, PPP, frame relay / switch, bridge
+           +-----------------+-------------
+     Bits  |     Física      | Hub, cabos, placa de rede, ondas wireless etc.
+           +-----------------+
+[1] pacotes ou datagramas
+[2] quadros ou frames
+
+- Só possuem protocolos 4 camadas de rede, Enlace, Rede, Transporte e
+  Aplicação.
+
+- O modelo OSI é, em uma visão simplificada, isso:
++----------------------------------------+
+|  Cabeçalho Ethernet                    |  
++----------------------------------------+
+|    +--------------------------------+  |
+|    |   Cabeçalho IP                 |  |  
+|    +--------------------------------+  |
+|    |   +------------------------+   |  |
+|    |   | Cabeçalho TCP          |   |  |
+|    |   +------------------------+   |  |
+|    |   | Payload TCP            |   |  |
+|    |   | +--------------------+ |   |  |
+|    |   | |        HTTP        | |   |  |
+|    |   | |                    | |   |  |
+|    |   | +--------------------+ |   |  |
+|    |   |                        |   |  |
+|    |   +------------------------+   |  |
+|    |   Payload IP                   |  |
+|    +--------------------------------+  |
+|  Payload Ethernet                      | 
++----------------------------------------+
+
+http://bit.ly/bridge_debian
